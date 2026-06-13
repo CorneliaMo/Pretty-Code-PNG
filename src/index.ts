@@ -4,3 +4,8 @@ export {
   languageFromFile,
   normalizeLanguage,
 } from "./language.js";
+export {
+  defaultOutputPath,
+  parseCliOptions,
+  type CliOptions,
+} from "./options.js";
