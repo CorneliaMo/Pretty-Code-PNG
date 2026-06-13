@@ -33,6 +33,17 @@ describe("renderSvg", () => {
     expect(result.svg).toContain(">2  </tspan>");
   });
 
+  it("preserves indentation, consecutive spaces, and expanded tabs", async () => {
+    const result = await renderSvg({
+      code: "root\n    indented  value\n\tTabbed",
+      language: "text",
+    });
+
+    expect(result.svg).toContain('<text xml:space="preserve"');
+    expect(result.svg).toContain(">    indented  value</tspan>");
+    expect(result.svg).toContain(">    Tabbed</tspan>");
+  });
+
   it("rejects simultaneous target dimensions", async () => {
     await expect(
       renderSvg({ code: "code", language: "text", width: 100, height: 100 }),

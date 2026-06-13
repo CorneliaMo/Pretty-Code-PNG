@@ -93,7 +93,7 @@ export async function renderSvg(options: RenderOptions): Promise<SvgResult> {
       const prefix = options.lineNumbers
         ? `<tspan fill="#6e7781">${escapeXml(lineNumberPrefix(index, digits))}</tspan>`
         : "";
-      return `<text x="${BORDER + PADDING}" y="${y}">${prefix}${tokens.map(renderToken).join("")}</text>`;
+      return `<text xml:space="preserve" x="${BORDER + PADDING}" y="${y}">${prefix}${tokens.map(renderToken).join("")}</text>`;
     })
     .join("\n");
 
