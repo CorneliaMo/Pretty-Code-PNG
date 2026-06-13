@@ -48,6 +48,7 @@ describe("parseCliOptions", () => {
   it.each(["0", "-1", "1.5", "invalid"])("rejects invalid dimensions: %s", (value) => {
     expect(() => parseCliOptions(["--width", value])).toThrow("positive integer");
   });
+
 });
 
 describe("defaultOutputPath", () => {

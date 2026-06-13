@@ -53,4 +53,25 @@ describe("main", () => {
     ).resolves.toBe(1);
     expect(errorOutput).toContain("--width and --height cannot be used together");
   });
+
+  it.each([
+    ["--version", "0.1.0"],
+    ["--help", "Usage: code-render"],
+  ])("prints %s and exits successfully", async (option, expected) => {
+    let output = "";
+    const stdout = new Writable({
+      write(chunk, _encoding, callback) {
+        output += chunk.toString();
+        callback();
+      },
+    });
+    const stderr = new Writable({
+      write(_chunk, _encoding, callback) {
+        callback();
+      },
+    });
+
+    await expect(main([option], Readable.from([]), stderr, stdout)).resolves.toBe(0);
+    expect(output).toContain(expected);
+  });
 });

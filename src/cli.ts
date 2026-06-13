@@ -4,7 +4,12 @@ import type { Readable, Writable } from "node:stream";
 import { pathToFileURL } from "node:url";
 
 import { loadCode } from "./input.js";
-import { defaultOutputPath, parseCliOptions } from "./options.js";
+import {
+  defaultOutputPath,
+  helpText,
+  PACKAGE_VERSION,
+  parseCliOptions,
+} from "./options.js";
 import { renderPng } from "./render.js";
 
 export async function runCli(
@@ -31,7 +36,16 @@ export async function main(
   argv: readonly string[] = process.argv.slice(2),
   stdin: Readable = process.stdin,
   stderr: Writable = process.stderr,
+  stdout: Writable = process.stdout,
 ): Promise<number> {
+  if (argv.includes("--version") || argv.includes("-V")) {
+    stdout.write(`${PACKAGE_VERSION}\n`);
+    return 0;
+  }
+  if (argv.includes("--help") || argv.includes("-h")) {
+    stdout.write(helpText());
+    return 0;
+  }
   try {
     await runCli(argv, stdin);
     return 0;

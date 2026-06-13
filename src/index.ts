@@ -6,6 +6,8 @@ export {
 } from "./language.js";
 export {
   defaultOutputPath,
+  helpText,
+  PACKAGE_VERSION,
   parseCliOptions,
   type CliOptions,
 } from "./options.js";
