@@ -22,3 +22,4 @@ export {
   type RenderOptions,
   type SvgResult,
 } from "./render.js";
+export { main, runCli } from "./cli.js";
