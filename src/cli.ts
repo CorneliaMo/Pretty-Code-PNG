@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
 import type { Readable, Writable } from "node:stream";
-import { pathToFileURL } from "node:url";
+import { realpathSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 
 import { loadCode } from "./input.js";
 import {
@@ -56,10 +57,17 @@ export async function main(
   }
 }
 
-const isDirectRun =
-  process.argv[1] !== undefined &&
-  import.meta.url === pathToFileURL(process.argv[1]).href;
+function isDirectRun(): boolean {
+  if (process.argv[1] === undefined) {
+    return false;
+  }
+  try {
+    return realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url));
+  } catch {
+    return false;
+  }
+}
 
-if (isDirectRun) {
+if (isDirectRun()) {
   process.exitCode = await main();
 }
