@@ -61,8 +61,24 @@ export async function loadFontSet(externalFontPath?: string): Promise<FontSet> {
   return { primary, fallback };
 }
 
-export function fontCss(fontSet: FontSet): string {
+function subsetFace(face: FontFace, text: string): FontFace {
+  const subset = face.font.createSubset();
+  for (const character of new Set(text)) {
+    const codePoint = character.codePointAt(0);
+    if (codePoint !== undefined && face.font.hasGlyphForCodePoint(codePoint)) {
+      subset.includeGlyph(face.font.glyphForCodePoint(codePoint));
+    }
+  }
+  return {
+    ...face,
+    data: Buffer.from(subset.encode()),
+    mimeType: "font/ttf",
+  };
+}
+
+export function fontCss(fontSet: FontSet, text?: string): string {
   return [fontSet.primary, fontSet.fallback]
+    .map((face) => (text === undefined ? face : subsetFace(face, text)))
     .map(
       (face) => `@font-face {
   font-family: "${face.family}";

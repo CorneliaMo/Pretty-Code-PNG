@@ -16,3 +16,9 @@ export {
   type FontFace,
   type FontSet,
 } from "./fonts.js";
+export {
+  renderPng,
+  renderSvg,
+  type RenderOptions,
+  type SvgResult,
+} from "./render.js";
