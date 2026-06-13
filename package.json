@@ -6,6 +6,12 @@
   "bin": {
     "code-render": "./dist/cli.js"
   },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
   "files": [
     "dist",
     "assets",
@@ -15,7 +21,8 @@
     "build": "tsc -p tsconfig.build.json",
     "check": "tsc --noEmit && eslint .",
     "test": "vitest run",
-    "test:all": "npm run check && npm run test && npm run build"
+    "test:all": "npm run check && npm run build && npm run test",
+    "prepack": "npm run test:all"
   },
   "engines": {
     "node": ">=22"
