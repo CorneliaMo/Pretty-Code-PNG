@@ -9,3 +9,10 @@ export {
   parseCliOptions,
   type CliOptions,
 } from "./options.js";
+export {
+  fontCss,
+  loadFontSet,
+  measureText,
+  type FontFace,
+  type FontSet,
+} from "./fonts.js";
