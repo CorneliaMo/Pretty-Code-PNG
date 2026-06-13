@@ -29,8 +29,24 @@ describe("renderSvg", () => {
       lineNumbers: true,
     });
 
-    expect(result.svg).toContain(">1  </tspan>");
-    expect(result.svg).toContain(">2  </tspan>");
+    expect(result.svg).toContain('text-anchor="end" fill="#6e7781">1</text>');
+    expect(result.svg).toContain('text-anchor="end" fill="#6e7781">2</text>');
+  });
+
+  it("right-aligns multi-digit line numbers against a fixed code start", async () => {
+    const result = await renderSvg({
+      code: Array.from({ length: 12 }, (_, index) => `line ${index + 1}`).join("\n"),
+      language: "text",
+      lineNumbers: true,
+    });
+    const lineNumbers = [...result.svg.matchAll(/<text x="([^"]+)" y="[^"]+" text-anchor="end"/g)];
+    const codeStarts = [...result.svg.matchAll(/<text xml:space="preserve" x="([^"]+)"/g)];
+
+    expect(lineNumbers).toHaveLength(12);
+    expect(new Set(lineNumbers.map((match) => match[1])).size).toBe(1);
+    expect(new Set(codeStarts.map((match) => match[1])).size).toBe(1);
+    expect(result.svg).toContain('text-anchor="end" fill="#6e7781">9</text>');
+    expect(result.svg).toContain('text-anchor="end" fill="#6e7781">10</text>');
   });
 
   it("preserves indentation, consecutive spaces, and expanded tabs", async () => {

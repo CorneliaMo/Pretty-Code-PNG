@@ -42,10 +42,6 @@ function expandTabs(value: string): string {
   return value.replaceAll("\t", "    ");
 }
 
-function lineNumberPrefix(index: number, digits: number): string {
-  return `${String(index + 1).padStart(digits, " ")}  `;
-}
-
 function renderToken(token: ThemedToken): string {
   const color = token.color ? ` fill="${escapeXml(token.color)}"` : "";
   return `<tspan${color}>${escapeXml(expandTabs(token.content))}</tspan>`;
@@ -75,13 +71,15 @@ export async function renderSvg(options: RenderOptions): Promise<SvgResult> {
   const lineHeight = fontSize * 1.5;
   const digits = String(lines.length).length;
   const plainLines = options.code.split("\n").map(expandTabs);
-  const displayLines = plainLines.map((line, index) =>
-    options.lineNumbers ? `${lineNumberPrefix(index, digits)}${line}` : line,
-  );
-  const contentWidth = Math.max(
-    ...displayLines.map((line) => measureText(line, fonts, fontSize)),
+  const codeWidth = Math.max(
+    ...plainLines.map((line) => measureText(line, fonts, fontSize)),
     fontSize,
   );
+  const lineNumberWidth = options.lineNumbers
+    ? measureText("9".repeat(digits), fonts, fontSize)
+    : 0;
+  const lineNumberGap = options.lineNumbers ? measureText("  ", fonts, fontSize) : 0;
+  const contentWidth = lineNumberWidth + lineNumberGap + codeWidth;
   const naturalWidth = Math.ceil(contentWidth + PADDING * 2 + BORDER * 2);
   const naturalHeight = Math.ceil(lines.length * lineHeight + PADDING * 2 + BORDER * 2);
   validateDimension(naturalWidth, "Natural width");
@@ -90,10 +88,11 @@ export async function renderSvg(options: RenderOptions): Promise<SvgResult> {
   const text = lines
     .map((tokens, index) => {
       const y = BORDER + PADDING + fontSize + index * lineHeight;
-      const prefix = options.lineNumbers
-        ? `<tspan fill="#6e7781">${escapeXml(lineNumberPrefix(index, digits))}</tspan>`
+      const contentStart = BORDER + PADDING + lineNumberWidth + lineNumberGap;
+      const lineNumber = options.lineNumbers
+        ? `<text x="${BORDER + PADDING + lineNumberWidth}" y="${y}" text-anchor="end" fill="#6e7781">${index + 1}</text>\n`
         : "";
-      return `<text xml:space="preserve" x="${BORDER + PADDING}" y="${y}">${prefix}${tokens.map(renderToken).join("")}</text>`;
+      return `${lineNumber}<text xml:space="preserve" x="${contentStart}" y="${y}">${tokens.map(renderToken).join("")}</text>`;
     })
     .join("\n");
 
