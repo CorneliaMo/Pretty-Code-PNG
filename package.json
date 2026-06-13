@@ -1,0 +1,39 @@
+{
+  "name": "code-renderer",
+  "version": "0.1.0",
+  "description": "Render syntax-highlighted source code to PNG images.",
+  "type": "module",
+  "bin": {
+    "code-render": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "assets",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "check": "tsc --noEmit && eslint .",
+    "test": "vitest run",
+    "test:all": "npm run check && npm run test && npm run build"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^14.0.0",
+    "fontkit": "^2.0.4",
+    "sharp": "^0.34.0",
+    "shiki": "^3.0.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.0.0",
+    "@types/fontkit": "^2.0.8",
+    "@types/node": "^24.0.0",
+    "eslint": "^9.0.0",
+    "typescript": "^5.9.0",
+    "typescript-eslint": "^8.0.0",
+    "vitest": "^3.0.0"
+  }
+}
