@@ -12,11 +12,12 @@ export {
   type CliOptions,
 } from "./options.js";
 export {
-  fontCss,
   loadFontSet,
   measureText,
+  textToSvgPaths,
   type FontFace,
   type FontSet,
+  type TextPathResult,
 } from "./fonts.js";
 export {
   renderPng,

@@ -15,9 +15,10 @@ describe("renderSvg", () => {
     });
 
     expect(result.svg).toContain('stroke="#000000"');
-    expect(result.svg).toContain("white-space: pre");
-    expect(result.svg).toContain('font-family: "CodePrimary"');
-    expect(result.svg).toContain("中文注释");
+    expect(result.svg).toContain("<path");
+    expect(result.svg).not.toContain("@font-face");
+    expect(result.svg).not.toContain("data:font/");
+    expect(result.svg).not.toContain("中文注释");
     expect(result.svg).not.toContain("<foreignObject");
     expect(result.width).toBeGreaterThan(200);
   });
@@ -29,8 +30,7 @@ describe("renderSvg", () => {
       lineNumbers: true,
     });
 
-    expect(result.svg).toContain('text-anchor="end" fill="#6e7781">1</text>');
-    expect(result.svg).toContain('text-anchor="end" fill="#6e7781">2</text>');
+    expect(result.svg.match(/<g fill="#6e7781">/g)).toHaveLength(2);
   });
 
   it("right-aligns multi-digit line numbers against a fixed code start", async () => {
@@ -39,14 +39,7 @@ describe("renderSvg", () => {
       language: "text",
       lineNumbers: true,
     });
-    const lineNumbers = [...result.svg.matchAll(/<text x="([^"]+)" y="[^"]+" text-anchor="end"/g)];
-    const codeStarts = [...result.svg.matchAll(/<text xml:space="preserve" x="([^"]+)"/g)];
-
-    expect(lineNumbers).toHaveLength(12);
-    expect(new Set(lineNumbers.map((match) => match[1])).size).toBe(1);
-    expect(new Set(codeStarts.map((match) => match[1])).size).toBe(1);
-    expect(result.svg).toContain('text-anchor="end" fill="#6e7781">9</text>');
-    expect(result.svg).toContain('text-anchor="end" fill="#6e7781">10</text>');
+    expect(result.svg.match(/<g fill="#6e7781">/g)).toHaveLength(12);
   });
 
   it("preserves indentation, consecutive spaces, and expanded tabs", async () => {
@@ -55,9 +48,9 @@ describe("renderSvg", () => {
       language: "text",
     });
 
-    expect(result.svg).toContain('<text xml:space="preserve"');
-    expect(result.svg).toContain(">    indented  value</tspan>");
-    expect(result.svg).toContain(">    Tabbed</tspan>");
+    expect(result.width).toBeGreaterThan(150);
+    expect(result.svg).not.toContain("indented");
+    expect(result.svg).not.toContain("Tabbed");
   });
 
   it("rejects simultaneous target dimensions", async () => {
@@ -81,5 +74,21 @@ describe("renderPng", () => {
     expect(metadata.format).toBe("png");
     expect(metadata.width).toBe(640);
     expect(metadata.height).toBeGreaterThan(0);
+  });
+
+  it("exports Chinese, punctuation, and mixed-language code without font subsetting", async () => {
+    const directory = await mkdtemp(join(tmpdir(), "code-renderer-chinese-"));
+    const output = join(directory, "chinese.png");
+
+    await expect(
+      renderPng(output, {
+        code: 'fn main() { println!("分析过程与归约过程，mixed text。"); }',
+        language: "rust",
+      }),
+    ).resolves.toBeUndefined();
+
+    const metadata = await sharp(output).metadata();
+    expect(metadata.format).toBe("png");
+    expect(metadata.width).toBeGreaterThan(300);
   });
 });

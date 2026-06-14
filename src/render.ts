@@ -8,7 +8,12 @@ import {
   type ThemedToken,
 } from "shiki";
 
-import { fontCss, loadFontSet, measureText } from "./fonts.js";
+import {
+  loadFontSet,
+  measureText,
+  textToSvgPaths,
+  type FontSet,
+} from "./fonts.js";
 
 const PADDING = 20;
 const BORDER = 1;
@@ -42,9 +47,22 @@ function expandTabs(value: string): string {
   return value.replaceAll("\t", "    ");
 }
 
-function renderToken(token: ThemedToken): string {
-  const color = token.color ? ` fill="${escapeXml(token.color)}"` : "";
-  return `<tspan${color}>${escapeXml(expandTabs(token.content))}</tspan>`;
+function renderTokenPaths(
+  token: ThemedToken,
+  fonts: FontSet,
+  fontSize: number,
+  x: number,
+  baselineY: number,
+): { svg: string; width: number } {
+  const color = escapeXml(token.color ?? "#24292e");
+  const rendered = textToSvgPaths(
+    expandTabs(token.content),
+    fonts,
+    fontSize,
+    x,
+    baselineY,
+  );
+  return { svg: `<g fill="${color}">${rendered.paths}</g>`, width: rendered.width };
 }
 
 function validateDimension(value: number, label: string): void {
@@ -90,17 +108,30 @@ export async function renderSvg(options: RenderOptions): Promise<SvgResult> {
       const y = BORDER + PADDING + fontSize + index * lineHeight;
       const contentStart = BORDER + PADDING + lineNumberWidth + lineNumberGap;
       const lineNumber = options.lineNumbers
-        ? `<text x="${BORDER + PADDING + lineNumberWidth}" y="${y}" text-anchor="end" fill="#6e7781">${index + 1}</text>\n`
+        ? textToSvgPaths(
+            String(index + 1),
+            fonts,
+            fontSize,
+            BORDER +
+              PADDING +
+              lineNumberWidth -
+              measureText(String(index + 1), fonts, fontSize),
+            y,
+          ).paths
         : "";
-      return `${lineNumber}<text xml:space="preserve" x="${contentStart}" y="${y}">${tokens.map(renderToken).join("")}</text>`;
+      let x = contentStart;
+      const code = tokens
+        .map((token) => {
+          const rendered = renderTokenPaths(token, fonts, fontSize, x, y);
+          x += rendered.width;
+          return rendered.svg;
+        })
+        .join("");
+      return `${lineNumber ? `<g fill="#6e7781">${lineNumber}</g>` : ""}${code}`;
     })
     .join("\n");
 
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${naturalWidth}" height="${naturalHeight}" viewBox="0 0 ${naturalWidth} ${naturalHeight}">
-<style>
-${fontCss(fonts, options.code)}
-text { font-family: "CodePrimary", "CodeFallback"; font-size: ${fontSize}px; font-variant-ligatures: none; white-space: pre; }
-</style>
 <rect x="0.5" y="0.5" width="${naturalWidth - 1}" height="${naturalHeight - 1}" fill="#ffffff" stroke="#000000" stroke-width="1"/>
 ${text}
 </svg>`;
