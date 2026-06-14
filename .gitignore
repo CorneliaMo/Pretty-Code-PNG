@@ -3,3 +3,4 @@ dist/
 coverage/
 *.png
 !test/fixtures/*.png
+!docs/theme-examples/*.png
