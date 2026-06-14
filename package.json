@@ -16,6 +16,7 @@
     "dist",
     "assets",
     "useful-tools",
+    "README.normal.md",
     "LICENSE"
   ],
   "scripts": {

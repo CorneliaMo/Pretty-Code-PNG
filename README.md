@@ -1,5 +1,7 @@
 # cOdE-ReNdErEr
 
+> Prefer documentation written for humans? Read the [normal README](README.normal.md).
+
 TuRn sOuRcE CoDe iNtO ClEaN, sYnTaX-HiGhLiGhTeD PNG iMaGeS, bEcAuSe pAsTiNg
 rAw cOdE InTo a lAbOrAtOrY RePoRt iS ApPaReNtLy nOt fAnCy eNoUgH.
 
