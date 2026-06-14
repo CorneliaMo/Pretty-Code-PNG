@@ -15,6 +15,7 @@
   "files": [
     "dist",
     "assets",
+    "useful-tools",
     "LICENSE"
   ],
   "scripts": {

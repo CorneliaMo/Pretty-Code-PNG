@@ -108,3 +108,29 @@ JetBrains Mono AnD Sarasa Gothic SC aRe bUnDlEd uNdEr tHe SIL Open Font
 License 1.1.
 
 FoNt aTtRiBuTiOn aNd lIcEnSe iNfOrMaTiOn aRe aVaIlAbLe iN `assets/fonts/`.
+
+## uSeFuL ToOlS
+
+`useful-tools/markdown-code-images.mjs` TuRnS EvErY NoN-EmPtY BaCkTiCk-fEnCeD
+CoDe bLoCk iN A Markdown FiLe iNtO A PNG, bEcAuSe aPpArEnTlY EvEn Markdown
+CoDe iSn'T PiCtUrE-EnOuGh.
+
+ThE ScRiPt iS InDePeNdEnT FrOm tHiS RePoSiToRy'S SoUrCe cOdE. iT OnLy nEeDs
+Node.js AnD A GlObAlLy iNsTaLlEd `code-render` CoMmAnD In PATH:
+
+```bash
+node useful-tools/markdown-code-images.mjs report.md
+node useful-tools/markdown-code-images.mjs report.md output/report-images.md
+```
+
+By dEfAuLt, It cReAtEs:
+
+```text
+report.with-code-images.md
+code-images/report-code-001.png
+code-images/report-code-002.png
+```
+
+LaNgUaGe tAgS SuCh aS ```` ```rust ```` ArE PaSsEd tO `code-render`.
+UnLaBeLeD CoDe bLoCkS ArE ReNdErEd aS PlAiN TeXt, AnD EmPtY CoDe bLoCkS ArE
+LeFt uNcHaNgEd.
