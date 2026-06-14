@@ -2,12 +2,15 @@ import { dirname, extname, join, parse } from "node:path";
 
 import { Command, CommanderError, Option } from "commander";
 
+import { DEFAULT_THEME, normalizeTheme } from "./theme.js";
+
 export const PACKAGE_VERSION = "0.1.0";
 
 export interface CliOptions {
   inputPath?: string;
   outputPath?: string;
   language?: string;
+  theme: string;
   fontSize: number;
   fontPath?: string;
   width?: number;
@@ -31,6 +34,7 @@ function createCommand(): Command {
     .argument("[input-file]", "code file to render; reads stdin when omitted")
     .option("-o, --output <path>", "output PNG path")
     .option("-l, --language <language>", "syntax language override")
+    .option("-t, --theme <theme>", "Shiki color theme", DEFAULT_THEME)
     .addOption(
       new Option("--font-size <pixels>", "font size in pixels")
         .default(16)
@@ -76,6 +80,7 @@ export function parseCliOptions(argv: readonly string[]): CliOptions {
   const raw = program.opts<{
     output?: string;
     language?: string;
+    theme: string;
     fontSize: number;
     font?: string;
     width?: number;
@@ -92,6 +97,7 @@ export function parseCliOptions(argv: readonly string[]): CliOptions {
     ...(inputPath ? { inputPath } : {}),
     ...(raw.output ? { outputPath: raw.output } : {}),
     ...(raw.language ? { language: raw.language } : {}),
+    theme: normalizeTheme(raw.theme),
     fontSize: raw.fontSize,
     ...(raw.font ? { fontPath: raw.font } : {}),
     ...(raw.width !== undefined ? { width: raw.width } : {}),

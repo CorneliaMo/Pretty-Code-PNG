@@ -26,3 +26,8 @@ export {
   type SvgResult,
 } from "./render.js";
 export { main, runCli } from "./cli.js";
+export {
+  AVAILABLE_THEMES,
+  DEFAULT_THEME,
+  normalizeTheme,
+} from "./theme.js";

@@ -30,7 +30,7 @@ describe("renderSvg", () => {
       lineNumbers: true,
     });
 
-    expect(result.svg.match(/<g fill="#6e7781">/g)).toHaveLength(2);
+    expect(result.svg.match(/opacity="0.65"/g)).toHaveLength(2);
   });
 
   it("right-aligns multi-digit line numbers against a fixed code start", async () => {
@@ -39,7 +39,18 @@ describe("renderSvg", () => {
       language: "text",
       lineNumbers: true,
     });
-    expect(result.svg.match(/<g fill="#6e7781">/g)).toHaveLength(12);
+    expect(result.svg.match(/opacity="0.65"/g)).toHaveLength(12);
+  });
+
+  it("applies the selected theme background and token colors", async () => {
+    const result = await renderSvg({
+      code: "const value = 42;",
+      language: "typescript",
+      theme: "catppuccin-mocha",
+    });
+
+    expect(result.svg).toContain('fill="#1e1e2e" stroke="#000000"');
+    expect(result.svg).toContain('fill="#CBA6F7"');
   });
 
   it("preserves indentation, consecutive spaces, and expanded tabs", async () => {

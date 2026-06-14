@@ -24,6 +24,7 @@ export async function runCli(
   await renderPng(outputPath, {
     code: input.code,
     language: input.language,
+    theme: options.theme,
     fontSize: options.fontSize,
     lineNumbers: options.lineNumbers,
     ...(options.fontPath ? { fontPath: options.fontPath } : {}),

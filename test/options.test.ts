@@ -9,6 +9,7 @@ describe("parseCliOptions", () => {
     expect(parseCliOptions([])).toEqual({
       fontSize: 16,
       lineNumbers: false,
+      theme: "github-light",
     });
   });
 
@@ -20,6 +21,8 @@ describe("parseCliOptions", () => {
         "result.png",
         "--language",
         "rust",
+        "--theme",
+        "catppuccin-mocha",
         "--font-size",
         "20",
         "--font",
@@ -32,6 +35,7 @@ describe("parseCliOptions", () => {
       inputPath: "main.rs",
       outputPath: "result.png",
       language: "rust",
+      theme: "catppuccin-mocha",
       fontSize: 20,
       fontPath: "custom.ttf",
       width: 1200,
@@ -49,6 +53,11 @@ describe("parseCliOptions", () => {
     expect(() => parseCliOptions(["--width", value])).toThrow("positive integer");
   });
 
+  it("rejects an unknown theme with a guide reference", () => {
+    expect(() => parseCliOptions(["--theme", "unknown-theme"])).toThrow(
+      "See docs/themes.md",
+    );
+  });
 });
 
 describe("defaultOutputPath", () => {

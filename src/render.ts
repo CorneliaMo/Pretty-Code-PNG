@@ -5,6 +5,7 @@ import sharp from "sharp";
 import {
   codeToTokens,
   type BundledLanguage,
+  type BundledTheme,
   type ThemedToken,
 } from "shiki";
 
@@ -14,6 +15,7 @@ import {
   textToSvgPaths,
   type FontSet,
 } from "./fonts.js";
+import { DEFAULT_THEME, normalizeTheme } from "./theme.js";
 
 const PADDING = 20;
 const BORDER = 1;
@@ -22,6 +24,7 @@ const MAX_DIMENSION = 32_768;
 export interface RenderOptions {
   code: string;
   language: string;
+  theme?: string;
   fontSize?: number;
   fontPath?: string;
   lineNumbers?: boolean;
@@ -81,10 +84,13 @@ export async function renderSvg(options: RenderOptions): Promise<SvgResult> {
   if (options.height !== undefined) validateDimension(options.height, "Height");
 
   const fonts = await loadFontSet(options.fontPath);
+  const theme = normalizeTheme(options.theme ?? DEFAULT_THEME);
   const highlighted = await codeToTokens(options.code, {
     lang: options.language as BundledLanguage,
-    theme: "github-light",
+    theme: theme as BundledTheme,
   });
+  const themeForeground = highlighted.fg ?? "#24292e";
+  const themeBackground = highlighted.bg ?? "#ffffff";
   const lines = highlighted.tokens;
   const lineHeight = fontSize * 1.5;
   const digits = String(lines.length).length;
@@ -127,12 +133,12 @@ export async function renderSvg(options: RenderOptions): Promise<SvgResult> {
           return rendered.svg;
         })
         .join("");
-      return `${lineNumber ? `<g fill="#6e7781">${lineNumber}</g>` : ""}${code}`;
+      return `${lineNumber ? `<g fill="${escapeXml(themeForeground)}" opacity="0.65">${lineNumber}</g>` : ""}${code}`;
     })
     .join("\n");
 
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${naturalWidth}" height="${naturalHeight}" viewBox="0 0 ${naturalWidth} ${naturalHeight}">
-<rect x="0.5" y="0.5" width="${naturalWidth - 1}" height="${naturalHeight - 1}" fill="#ffffff" stroke="#000000" stroke-width="1"/>
+<rect x="0.5" y="0.5" width="${naturalWidth - 1}" height="${naturalHeight - 1}" fill="${escapeXml(themeBackground)}" stroke="#000000" stroke-width="1"/>
 ${text}
 </svg>`;
 
