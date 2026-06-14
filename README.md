@@ -129,6 +129,7 @@ Node.js AnD A GlObAlLy iNsTaLlEd `code-render` CoMmAnD In PATH:
 ```bash
 node useful-tools/markdown-code-images.mjs report.md
 node useful-tools/markdown-code-images.mjs report.md output/report-images.md
+node useful-tools/markdown-code-images.mjs report.md -- --theme catppuccin-mocha --line-numbers
 ```
 
 By dEfAuLt, It cReAtEs:
@@ -142,3 +143,8 @@ code-images/report-code-002.png
 LaNgUaGe tAgS SuCh aS ```` ```rust ```` ArE PaSsEd tO `code-render`.
 UnLaBeLeD CoDe bLoCkS ArE ReNdErEd aS PlAiN TeXt, AnD EmPtY CoDe bLoCkS ArE
 LeFt uNcHaNgEd.
+
+OpTiOnS AfTeR `--` ArE FoRwArDeD To eVeRy `code-render` InVoCaTiOn. ThIs
+SuPpOrTs `--theme` AnD FuTuRe rEnDeRiNg oPtIoNs wItHoUt cHaNgInG ThE ScRiPt.
+InPuT, oUtPuT, lAnGuAgE, hElP, aNd vErSiOn oPtIoNs aRe mAnAgEd bY ThE ScRiPt
+aNd cAnNoT Be fOrWaRdEd.

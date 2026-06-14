@@ -109,6 +109,7 @@ Node.js and a globally installed `code-render` command in `PATH`:
 ```bash
 node useful-tools/markdown-code-images.mjs report.md
 node useful-tools/markdown-code-images.mjs report.md output/report-images.md
+node useful-tools/markdown-code-images.mjs report.md -- --theme catppuccin-mocha --line-numbers
 ```
 
 By default, it creates:
@@ -122,6 +123,11 @@ code-images/report-code-002.png
 Language tags such as ```` ```rust ```` are passed to `code-render`. Unlabeled
 code blocks are rendered as plain text, and empty code blocks are left
 unchanged.
+
+Options after `--` are forwarded to every `code-render` invocation. This
+supports `--theme` and future rendering options without changing the script.
+Input, output, language, help, and version options are managed by the script
+and cannot be forwarded.
 
 ## Development
 

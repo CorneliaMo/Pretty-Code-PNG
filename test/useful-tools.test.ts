@@ -47,6 +47,7 @@ const output = args[args.indexOf("--output") + 1];
 const languageIndex = args.indexOf("--language");
 await writeFile(output, Buffer.from("fake png"));
 await appendFile(process.env.RENDER_LOG, JSON.stringify({
+  args,
   code,
   language: languageIndex >= 0 ? args[languageIndex + 1] : null,
   output,
@@ -117,5 +118,46 @@ plain text
 
     expect(result.code).toBe(1);
     expect(result.stdout).toBe("");
+  });
+
+  it("forwards code-render options after the separator", async () => {
+    const directory = await mkdtemp(join(tmpdir(), "markdown-code-images-options-"));
+    const binDirectory = join(directory, "bin");
+    const input = join(directory, "report.md");
+    const log = join(directory, "render.log");
+    await mkdir(binDirectory);
+    await createFakeCodeRender(binDirectory);
+    await writeFile(input, "```js\nconsole.log(1)\n```\n", "utf8");
+
+    const result = await runTool(
+      [input, "--", "--theme", "catppuccin-mocha", "--line-numbers", "--width", "900"],
+      binDirectory,
+      log,
+    );
+
+    expect(result.code).toBe(0);
+    const call = JSON.parse((await readFile(log, "utf8")).trim());
+    expect(call.args).toEqual([
+      expect.stringContaining("code.txt"),
+      "--theme",
+      "catppuccin-mocha",
+      "--line-numbers",
+      "--width",
+      "900",
+      "--output",
+      expect.stringContaining("report-code-001.png"),
+      "--language",
+      "js",
+    ]);
+  });
+
+  it("rejects forwarded options managed by the script", async () => {
+    const directory = await mkdtemp(join(tmpdir(), "markdown-code-images-reserved-"));
+    const input = join(directory, "report.md");
+    await writeFile(input, "```js\nconsole.log(1)\n```\n", "utf8");
+
+    const result = await runTool([input, "--", "--output", "wrong.png"], directory);
+
+    expect(result.code).toBe(1);
   });
 });

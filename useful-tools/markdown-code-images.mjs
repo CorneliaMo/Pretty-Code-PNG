@@ -8,13 +8,18 @@ import { basename, dirname, extname, join, relative, resolve, sep } from "node:p
 import { pathToFileURL } from "node:url";
 
 function usage() {
-  return `Usage: node markdown-code-images.mjs <input.md> [output.md]
+  return `Usage: node markdown-code-images.mjs <input.md> [output.md] [-- <code-render options...>]
 
 Render fenced code blocks with the globally installed code-render command.
 
 Defaults:
   output.md    <input-name>.with-code-images.md
   images      code-images/<input-name>-code-001.png
+
+Example:
+  node markdown-code-images.mjs report.md -- --theme catppuccin-mocha --line-numbers
+
+The script manages code-render input, output, and language options itself.
 `;
 }
 
@@ -33,13 +38,43 @@ function languageFromInfo(info) {
   return value.replace(/^\{?\.?/, "").replace(/\}?$/, "") || undefined;
 }
 
-async function runCodeRender(code, outputPath, language) {
+function validateForwardedOptions(options) {
+  const reserved = new Set([
+    "--help",
+    "-h",
+    "--language",
+    "-l",
+    "--output",
+    "-o",
+    "--version",
+    "-V",
+  ]);
+  const conflict = options.find(
+    (option) =>
+      reserved.has(option) ||
+      option.startsWith("--language=") ||
+      option.startsWith("--output="),
+  );
+  if (conflict) {
+    throw new Error(`Cannot forward reserved code-render option: ${conflict}`);
+  }
+}
+
+function parseArguments(argv) {
+  const separator = argv.indexOf("--");
+  const scriptArguments = separator >= 0 ? argv.slice(0, separator) : argv;
+  const forwardedOptions = separator >= 0 ? argv.slice(separator + 1) : [];
+  validateForwardedOptions(forwardedOptions);
+  return { scriptArguments, forwardedOptions };
+}
+
+async function runCodeRender(code, outputPath, language, forwardedOptions) {
   const temporaryDirectory = await mkdtemp(join(tmpdir(), "markdown-code-images-"));
   const temporaryCode = join(temporaryDirectory, "code.txt");
   await writeFile(temporaryCode, code, "utf8");
   try {
     await new Promise((resolvePromise, reject) => {
-      const args = [temporaryCode, "--output", outputPath];
+      const args = [temporaryCode, ...forwardedOptions, "--output", outputPath];
       if (language) {
         args.push("--language", language);
       }
@@ -70,7 +105,8 @@ async function runCodeRender(code, outputPath, language) {
   }
 }
 
-export async function convertMarkdown(input, output) {
+export async function convertMarkdown(input, output, forwardedOptions = []) {
+  validateForwardedOptions(forwardedOptions);
   const inputPath = resolve(input);
   const outputPath = resolve(output ?? outputPathFor(inputPath));
   if (inputPath === outputPath) {
@@ -123,7 +159,7 @@ export async function convertMarkdown(input, output) {
       imageDirectory,
       `${inputName}-code-${String(index).padStart(3, "0")}.png`,
     );
-    await runCodeRender(code, imagePath, language);
+    await runCodeRender(code, imagePath, language, forwardedOptions);
     const imageReference = markdownPath(relative(dirname(outputPath), imagePath));
     rendered.push(`![Rendered code block ${index}](${imageReference})\n`);
     cursor = closingIndex + 1;
@@ -135,16 +171,21 @@ export async function convertMarkdown(input, output) {
 }
 
 export async function main(argv = process.argv.slice(2)) {
-  if (argv.includes("--help") || argv.includes("-h")) {
-    process.stdout.write(usage());
-    return 0;
-  }
-  if (argv.length < 1 || argv.length > 2) {
-    process.stderr.write(usage());
-    return 1;
-  }
   try {
-    const result = await convertMarkdown(argv[0], argv[1]);
+    const { scriptArguments, forwardedOptions } = parseArguments(argv);
+    if (scriptArguments.includes("--help") || scriptArguments.includes("-h")) {
+      process.stdout.write(usage());
+      return 0;
+    }
+    if (scriptArguments.length < 1 || scriptArguments.length > 2) {
+      process.stderr.write(usage());
+      return 1;
+    }
+    const result = await convertMarkdown(
+      scriptArguments[0],
+      scriptArguments[1],
+      forwardedOptions,
+    );
     process.stdout.write(`Rendered ${result.imageCount} code block(s) to ${result.outputPath}\n`);
     return 0;
   } catch (error) {
