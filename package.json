@@ -1,6 +1,6 @@
 {
   "name": "code-renderer",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Render syntax-highlighted source code to PNG images.",
   "type": "module",
   "bin": {

@@ -28,7 +28,7 @@ Node.js 22 or newer is required.
 Install from a packaged tarball:
 
 ```bash
-npm install -g ./code-renderer-0.1.0.tgz
+npm install -g ./code-renderer-0.1.1.tgz
 ```
 
 Or build and link the project locally:

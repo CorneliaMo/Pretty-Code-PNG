@@ -4,7 +4,7 @@ import { Command, CommanderError, Option } from "commander";
 
 import { DEFAULT_THEME, normalizeTheme } from "./theme.js";
 
-export const PACKAGE_VERSION = "0.1.0";
+export const PACKAGE_VERSION = "0.1.1";
 
 export interface CliOptions {
   inputPath?: string;

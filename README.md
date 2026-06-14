@@ -28,7 +28,7 @@ Node.js 22 Or nEwEr iS ReQuIrEd.
 InStAlL FrOm a pAcKaGeD TaRbAlL:
 
 ```bash
-npm install -g ./code-renderer-0.1.0.tgz
+npm install -g ./code-renderer-0.1.1.tgz
 ```
 
 Or bUiLd aNd lInK ThE PrOjEcT LoCaLlY:

@@ -55,7 +55,7 @@ describe("main", () => {
   });
 
   it.each([
-    ["--version", "0.1.0"],
+    ["--version", "0.1.1"],
     ["--help", "Usage: code-render"],
   ])("prints %s and exits successfully", async (option, expected) => {
     let output = "";
