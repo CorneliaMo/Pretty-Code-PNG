@@ -16,6 +16,7 @@ thin black frame, and exports the result as a PNG.
 - Optional right-aligned line numbers
 - No automatic line wrapping
 - Custom font and font-size support
+- Configurable Shiki themes, including Catppuccin, Dracula, and Nord
 - Scale by width or height while preserving the aspect ratio
 - File input and stdin support
 - One serious-looking black rectangular border
@@ -45,6 +46,7 @@ Render a source file:
 ```bash
 code-render main.rs
 code-render src/main.ts --width 1200 --line-numbers
+code-render src/main.ts --theme catppuccin-mocha
 ```
 
 By default, file input produces a PNG beside the source file. For example,
@@ -70,6 +72,7 @@ you would prefer certainty over adventure.
 | `[input-file]` | Source file to render; reads stdin when omitted |
 | `-o, --output <path>` | Output PNG path |
 | `-l, --language <language>` | Override automatic language detection |
+| `-t, --theme <theme>` | Select a Shiki theme; defaults to `github-light` |
 | `--font-size <pixels>` | Font size; defaults to `16` |
 | `--font <path>` | Use an external `.ttf`, `.otf`, `.woff`, or `.woff2` font |
 | `--width <pixels>` | Set output width and scale height proportionally |
@@ -80,6 +83,9 @@ you would prefer certainty over adventure.
 
 `--width` and `--height` cannot be used together. Existing output files are
 overwritten without ceremony.
+
+See the [theme guide](docs/themes.md) for popular themes, rendered examples,
+and the complete list of available theme IDs.
 
 ## Rendering Rules
 

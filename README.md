@@ -16,6 +16,7 @@ tHiN BlAcK FrAmE, aNd eXpOrTs tHe rEsUlT As a PNG.
 - OpTiOnAl rIgHt-aLiGnEd lInE NuMbErS
 - No aUtOmAtIc lInE WrApPiNg
 - CuStOm fOnT AnD FoNt-sIzE SuPpOrT
+- CoNfIgUrAbLe Shiki ThEmEs, InClUdInG Catppuccin, Dracula, AnD Nord
 - ScAlE By wIdTh oR HeIgHt wHiLe pReSeRvInG ThE AsPeCt rAtIo
 - FiLe iNpUt aNd stdin SuPpOrT
 - OnE SeRiOuS-LoOkInG BlAcK ReCtAnGuLaR BoRdEr
@@ -45,6 +46,7 @@ ReNdEr a sOuRcE FiLe:
 ```bash
 code-render main.rs
 code-render src/main.ts --width 1200 --line-numbers
+code-render src/main.ts --theme catppuccin-mocha
 ```
 
 By dEfAuLt, FiLe iNpUt pRoDuCeS A PNG bEsIdE ThE SoUrCe fIlE. fOr eXaMpLe,
@@ -70,6 +72,7 @@ wHeN YoU WoUlD PrEfEr cErTaInTy oVeR AdVeNtUrE.
 | `[input-file]` | SoUrCe fIlE To rEnDeR; rEaDs stdin WhEn oMiTtEd |
 | `-o, --output <path>` | OuTpUt PNG pAtH |
 | `-l, --language <language>` | OvErRiDe aUtOmAtIc lAnGuAgE DeTeCtIoN |
+| `-t, --theme <theme>` | SeLeCt a Shiki ThEmE; dEfAuLtS To `github-light` |
 | `--font-size <pixels>` | FoNt sIzE; dEfAuLtS To `16` |
 | `--font <path>` | UsE An eXtErNaL `.ttf`, `.otf`, `.woff`, Or `.woff2` FoNt |
 | `--width <pixels>` | SeT OuTpUt wIdTh aNd sCaLe hEiGhT PrOpOrTiOnAlLy |
@@ -80,6 +83,9 @@ wHeN YoU WoUlD PrEfEr cErTaInTy oVeR AdVeNtUrE.
 
 `--width` AnD `--height` CaNnOt bE UsEd tOgEtHeR. eXiStInG OuTpUt fIlEs aRe
 OvErWrItTeN WiThOuT CeReMoNy.
+
+SeE ThE [tHeMe gUiDe](docs/themes.md) FoR PoPuLaR ThEmEs, ReNdErEd eXaMpLeS,
+aNd tHe cOmPlEtE LiSt oF AvAiLaBlE ThEmE IDs.
 
 ## rEnDeRiNg rUlEs
 

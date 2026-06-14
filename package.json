@@ -15,6 +15,7 @@
   "files": [
     "dist",
     "assets",
+    "docs",
     "useful-tools",
     "README.normal.md",
     "LICENSE"
