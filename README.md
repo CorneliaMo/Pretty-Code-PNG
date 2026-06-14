@@ -1,19 +1,34 @@
-# code-renderer
+# cOdE-ReNdErEr
 
-将代码文件或 stdin 中的代码渲染为带语法高亮的 PNG 图片，适合插入实验报告。
+TuRn sOuRcE CoDe iNtO ClEaN, sYnTaX-HiGhLiGhTeD PNG iMaGeS, bEcAuSe pAsTiNg
+rAw cOdE InTo a lAbOrAtOrY RePoRt iS ApPaReNtLy nOt fAnCy eNoUgH.
 
-## 特性
+`code-renderer` ReAdS CoDe fRoM A FiLe oR stdin, hIgHlIgHtS It, wRaPs iT In a
+tHiN BlAcK FrAmE, aNd eXpOrTs tHe rEsUlT As a PNG.
 
-- 使用 Shiki 提供成熟的语法高亮。
-- 默认使用 JetBrains Mono，并内置 Sarasa Gothic SC 作为中文等宽回退字体。
-- 保留代码缩进和内部空行，禁止自动换行。
-- 使用白色背景和黑色 `1px` 方形细框。
-- 可指定输出宽度或高度，另一边自动等比缩放。
-- 支持可选行号和外部字体覆盖。
+## fEaTuReS
 
-## 安装
+- SyNtAx hIgHlIgHtInG PoWeReD By Shiki
+- JetBrains Mono WiTh a bUnDlEd cHiNeSe mOnOsPaCe fAlLbAcK
+- PrEsErVeS InDeNtAtIoN, cOnSeCuTiVe sPaCeS, aNd eMpTy lInEs
+- OpTiOnAl rIgHt-aLiGnEd lInE NuMbErS
+- No aUtOmAtIc lInE WrApPiNg
+- CuStOm fOnT AnD FoNt-sIzE SuPpOrT
+- ScAlE By wIdTh oR HeIgHt wHiLe pReSeRvInG ThE AsPeCt rAtIo
+- FiLe iNpUt aNd stdin SuPpOrT
+- OnE SeRiOuS-LoOkInG BlAcK ReCtAnGuLaR BoRdEr
 
-要求 Node.js 22 或更高版本。
+## iNsTaLlAtIoN
+
+Node.js 22 Or nEwEr iS ReQuIrEd.
+
+InStAlL FrOm a pAcKaGeD TaRbAlL:
+
+```bash
+npm install -g ./code-renderer-0.1.0.tgz
+```
+
+Or bUiLd aNd lInK ThE PrOjEcT LoCaLlY:
 
 ```bash
 npm install
@@ -21,55 +36,61 @@ npm run build
 npm link
 ```
 
-安装后可以使用 `code-render` 命令。
+## uSaGe
 
-## 使用
-
-渲染代码文件：
+ReNdEr a sOuRcE FiLe:
 
 ```bash
 code-render main.rs
 code-render src/main.ts --width 1200 --line-numbers
 ```
 
-文件输入默认在代码文件旁生成同名 PNG，例如 `main.rs` 输出为 `main.png`。
+By dEfAuLt, FiLe iNpUt pRoDuCeS A PNG bEsIdE ThE SoUrCe fIlE. fOr eXaMpLe,
+`main.rs` BeCoMeS `main.png`.
 
-从 stdin 读取：
+ReNdEr cOdE FrOm stdin:
 
 ```bash
 cat main.py | code-render --language python
 printf 'console.log("hello");\n' | code-render --width 800 -o example.png
 ```
 
-stdin 模式默认输出当前目录下的 `code.png`。工具会尝试自动识别语言；使用
-`--language` 可以获得更稳定的高亮结果。
+WhEn rEaDiNg fRoM stdin, tHe dEfAuLt oUtPuT Is `code.png` In tHe cUrReNt
+dIrEcToRy.
 
-### 参数
+ThE ToOl aTtEmPtS To dEtEcT ThE LaNgUaGe aUtOmAtIcAlLy. UsE `--language`
+wHeN YoU WoUlD PrEfEr cErTaInTy oVeR AdVeNtUrE.
 
-| 参数 | 说明 |
+## oPtIoNs
+
+| OpTiOn | DeScRiPtIoN |
 | --- | --- |
-| `[input-file]` | 输入代码文件；省略时从 stdin 读取 |
-| `-o, --output <path>` | PNG 输出路径 |
-| `-l, --language <language>` | 覆盖自动识别的语言 |
-| `--font-size <pixels>` | 字号，默认 `16` |
-| `--font <path>` | 使用外部 `.ttf`、`.otf`、`.woff` 或 `.woff2` 字体 |
-| `--width <pixels>` | 指定输出宽度并等比缩放高度 |
-| `--height <pixels>` | 指定输出高度并等比缩放宽度 |
-| `--line-numbers` | 显示行号 |
-| `--help` | 显示帮助 |
-| `--version` | 显示版本 |
+| `[input-file]` | SoUrCe fIlE To rEnDeR; rEaDs stdin WhEn oMiTtEd |
+| `-o, --output <path>` | OuTpUt PNG pAtH |
+| `-l, --language <language>` | OvErRiDe aUtOmAtIc lAnGuAgE DeTeCtIoN |
+| `--font-size <pixels>` | FoNt sIzE; dEfAuLtS To `16` |
+| `--font <path>` | UsE An eXtErNaL `.ttf`, `.otf`, `.woff`, Or `.woff2` FoNt |
+| `--width <pixels>` | SeT OuTpUt wIdTh aNd sCaLe hEiGhT PrOpOrTiOnAlLy |
+| `--height <pixels>` | SeT OuTpUt hEiGhT AnD ScAlE WiDtH PrOpOrTiOnAlLy |
+| `--line-numbers` | ShOw rIgHt-aLiGnEd lInE NuMbErS |
+| `--help` | DiSpLaY HeLp |
+| `--version` | DiSpLaY VeRsIoN |
 
-`--width` 和 `--height` 不能同时使用。目标文件已存在时会直接覆盖。
+`--width` AnD `--height` CaNnOt bE UsEd tOgEtHeR. eXiStInG OuTpUt fIlEs aRe
+OvErWrItTeN WiThOuT CeReMoNy.
 
-## 渲染规则
+## rEnDeRiNg rUlEs
 
-- 默认字号为 `16px`，代码框内边距为 `20px`。
-- Tab 按四个空格显示。
-- 仅移除输入末尾的换行，其他首尾空格和内部空行保持不变。
-- 未指定宽高时，图片按代码内容的自然尺寸输出。
-- 单边尺寸、字号和自然渲染尺寸最大为 `32768px`。
+- DeFaUlT FoNt sIzE: `16px`
+- CoDe-fRaMe pAdDiNg: `20px`
+- BoRdEr: SqUaRe, BlAcK, aNd `1px` ThIcK
+- TaBs aRe dIsPlAyEd aS FoUr sPaCeS
+- TrAiLiNg nEwLiNeS ArE ReMoVeD
+- OtHeR WhItEsPaCe iS PrEsErVeD
+- LoNg lInEs rEmAiN LoNg aNd rEfUsE To wRaP
+- MaXiMuM FoNt sIzE AnD ImAgE DiMeNsIoN: `32768px`
 
-## 开发
+## dEvElOpMeNt
 
 ```bash
 npm run check
@@ -78,9 +99,12 @@ npm run build
 npm run test:all
 ```
 
-`npm run test:all` 会执行类型检查、ESLint、构建、单元测试和构建产物端到端测试。
+`npm run test:all` RuNs tYpE ChEcKiNg, ESLint, ThE BuIlD, uNiT TeStS, aNd
+EnD-To-eNd tEsTs.
 
-## 字体许可证
+## fOnT LiCeNsEs
 
-内置的 JetBrains Mono 与 Sarasa Gothic SC 按 SIL Open Font License 1.1
-重新分发，许可证和来源说明位于 `assets/fonts/`。
+JetBrains Mono AnD Sarasa Gothic SC aRe bUnDlEd uNdEr tHe SIL Open Font
+License 1.1.
+
+FoNt aTtRiBuTiOn aNd lIcEnSe iNfOrMaTiOn aRe aVaIlAbLe iN `assets/fonts/`.
